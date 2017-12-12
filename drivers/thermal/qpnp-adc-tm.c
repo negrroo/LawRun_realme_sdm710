@@ -2144,9 +2144,11 @@ static int qpnp_adc_tm_disable_rearm_high_thresholds(
 		return rc;
 	}
 
-	queue_work(chip->sensor[sensor_num].req_wq,
-		&chip->sensor[sensor_num].work);
-
+	if (!queue_work(chip->sensor[sensor_num].req_wq,
+				&chip->sensor[sensor_num].work)) {
+		/* The item is already queued, reduce the count */
+		atomic_dec(&chip->wq_cnt);
+	}
 	return rc;
 }
 
@@ -2252,8 +2254,11 @@ static int qpnp_adc_tm_disable_rearm_low_thresholds(
 		return rc;
 	}
 
-	queue_work(chip->sensor[sensor_num].req_wq,
-				&chip->sensor[sensor_num].work);
+	if (!queue_work(chip->sensor[sensor_num].req_wq,
+				&chip->sensor[sensor_num].work)) {
+		/* The item is already queued, reduce the count */
+		atomic_dec(&chip->wq_cnt);
+	}
 
 	return rc;
 }
