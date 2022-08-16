@@ -164,10 +164,7 @@ static ssize_t psi_monitor_write( const char *buf,
 		return PTR_ERR(new);
 
 	mutex_lock(&trigger_mutex);
-	psi_trigger_replace(&trigger_ptr, new);
 	mutex_unlock(&trigger_mutex);
-	/*add refcount for kernel psi poll*/
-	kref_get(&new->refcount);
 
 	return nbytes;
 }
