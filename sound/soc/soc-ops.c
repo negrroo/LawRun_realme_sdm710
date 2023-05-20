@@ -329,7 +329,7 @@ int snd_soc_put_volsw(struct snd_kcontrol *kcontrol,
 		mask = BIT(sign_bit + 1) - 1;
 
 	val = ucontrol->value.integer.value[0];
-	if (mc->platform_max && ((int)val + min) > mc->platform_max)
+	if (mc->platform_max && val > mc->platform_max)
 		return -EINVAL;
 	if (val > max - min)
 		return -EINVAL;
@@ -923,12 +923,11 @@ int snd_soc_put_xr_sx(struct snd_kcontrol *kcontrol,
 	unsigned int invert = mc->invert;
 	unsigned long mask = (1UL<<mc->nbits)-1;
 	long max = mc->max;
-	long min = mc->min;
 	long val = ucontrol->value.integer.value[0];
 	unsigned int i, regval, regmask;
 	int err;
 
-	if (val < mc->min || ((int)val + min) > mc->max)
+	if (val < mc->min || val > mc->max)
 		return -EINVAL;
 	if (invert)
 		val = max - val;
